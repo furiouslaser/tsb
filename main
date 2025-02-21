@@ -75,7 +75,7 @@ player.Chatted:Connect(function(msg)
         player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
         task.wait(0.3)
         player.Character:SetPrimaryPartCFrame(Void)
-	task.wait(2)
+	task.wait(5)
 	player.Character:SetPrimaryPartCFrame(pos)
             end
         end
