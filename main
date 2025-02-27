@@ -93,14 +93,19 @@ local function buttonpress(button, gameP)
             local trashcans = {} 
             for _, obj in pairs(game.Workspace.Map.Trash:GetChildren()) do
                 if obj.Name == "Trashcan" and obj:IsA("Model") then
+                    if obj.Trashcan.CanCollide == true then
                     table.insert(trashcans, obj)  
+                    print(obj)
+                    print(obj.Trashcan.CanCollide)
+                    end
                 end
             end
             if #trashcans > 0 then
                 local randomTrashcan = trashcans[math.random(1, #trashcans)] 
                 print(randomTrashcan)
-                local trashpos = randomTrashcan:GetModelCFrame().p  
-                player.Character:SetPrimaryPartCFrame(CFrame.new(trashpos, trashpos + Vector3.new(0, 0, 2)))
+                local lookDirection = randomTrashcan.Trashcan.CFrame.LookVector
+                local behindPosition = randomTrashcan.Trashcan.Position - lookDirection * 1
+                player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, randomTrashcan.Trashcan.Position))
                 task.wait(0.1)
                 mouse1press()
 
@@ -121,5 +126,6 @@ local function buttonpress(button, gameP)
         end
     end
 end
+
 
 uis.InputBegan:Connect(buttonpress)
