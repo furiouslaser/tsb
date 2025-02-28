@@ -37,7 +37,7 @@ end)
 player.Chatted:Connect(function(msg)
     local split = string.split(msg, " ")
     if string.lower(split[1]) == prefix..commands.view then
-    local Player = autofill(split[2])
+    if string.lower(split[2]) == "random" then 	local image = table[math.random(1, #game:GetService("Players"):GetPlayers())]      else     local Player = autofill(split[2]) end
      if Player then
                 camera.CameraSubject = Player.Character.Humanoid
             end
@@ -46,18 +46,15 @@ player.Chatted:Connect(function(msg)
             camera.CameraSubject = player.Character.Humanoid
         end
     if string.lower(split[1]) == prefix..commands.to then
-        local Player = autofill(split[2])
+        if string.lower(split[2]) == "random" then 	local image = table[math.random(1, #game:GetService("Players"):GetPlayers())]      else     local Player = autofill(split[2]) end
         if Player then
         local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
         local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
         player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))        end
     end
     if string.lower(split[1]) == prefix..commands.bring then
-if string.lower(split[2]) == "random" then
-	local image = table[math.random(1, #game:GetService("Players"):GetPlayers())] 
-    else
-    local Player = autofill(split[2])
-end
+    if string.lower(split[2]) == "random" then 	local image = table[math.random(1, #game:GetService("Players"):GetPlayers())]      else     local Player = autofill(split[2]) end
+
      if Player then
         local pos = player.Character.PrimaryPart.CFrame
         game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
@@ -70,7 +67,7 @@ end
             end
         end
         if string.lower(split[1]) == prefix..commands.void then
-    local Player = autofill(split[2])
+    if string.lower(split[2]) == "random" then 	local image = table[math.random(1, #game:GetService("Players"):GetPlayers())]      else     local Player = autofill(split[2]) end
      if Player then
         local pos = player.Character.PrimaryPart.CFrame
         game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
