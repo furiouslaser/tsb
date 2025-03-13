@@ -13,12 +13,63 @@ local commands = {
     rejoin = "rejoin",
     void = "void",
     view = "view",
-    unview = "unview"
+    unview = "unview",
+    cmds = "cmds" -- Adding the new command for displaying all commands
 }
 local camera = workspace.CurrentCamera
 local mountains = CFrame.new(445, 685, 368)
 local atomic = CFrame.new(1080, 20, 23000)
 local Void = CFrame.new(-3729, 2388, 31933)
+
+-- Create the GUI for displaying commands
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+screenGui.Enabled = false  -- Initially hide the UI
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(0, 300, 0, 400)
+scrollFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+scrollFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+scrollFrame.BorderSizePixel = 0
+scrollFrame.Parent = screenGui
+
+-- Scrolling properties
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 10
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Parent = scrollFrame
+
+local function createCommandButton(command)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 30)
+    button.Text = command
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    button.TextSize = 20
+    button.Parent = scrollFrame
+end
+
+-- Show all commands in the scrolling frame
+local function displayCommands()
+    -- Clear the existing UI elements
+    for _, child in pairs(scrollFrame:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+    end
+    
+    -- Add each command to the list
+    for _, command in pairs(commands) do
+        createCommandButton(command)
+    end
+
+    -- Update canvas size to fit all items
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+end
+
 local function autofill(abbreviation)
     for i,v in ipairs(game:GetService("Players"):GetPlayers()) do
         if v.Name:lower():sub(1, abbreviation:len()) == abbreviation:lower() or v.DisplayName:lower():sub(1, abbreviation:len()) == abbreviation:lower() then
@@ -37,99 +88,150 @@ end)
 player.Chatted:Connect(function(msg)
     local split = string.split(msg, " ")
     if string.lower(split[1]) == prefix..commands.view then
-    local Player = autofill(split[2])
-     if Player then
-                camera.CameraSubject = Player.Character.Humanoid
-            end
+        local Player = autofill(split[2])
+        if Player then
+            camera.CameraSubject = Player.Character.Humanoid
         end
+    end
     if string.lower(split[1]) == prefix..commands.unview then
-            camera.CameraSubject = player.Character.Humanoid
-        end
+        camera.CameraSubject = player.Character.Humanoid
+    end
     if string.lower(split[1]) == prefix..commands.to then
         local Player = autofill(split[2])
         if Player then
-        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
-        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
-        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))        end
+            local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+            local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
+            player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+        end
     end
     if string.lower(split[1]) == prefix..commands.bring then
-    local Player = autofill(split[2])
-     if Player then
-        local pos = player.Character.PrimaryPart.CFrame
-        game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
-        wait(0.3)
-        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
-        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
-        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
-        task.wait(0.3)
-        player.Character:SetPrimaryPartCFrame(pos)
-            end
-        end
-        if string.lower(split[1]) == prefix..commands.void then
-    local Player = autofill(split[2])
-     if Player then
-        local pos = player.Character.PrimaryPart.CFrame
-        game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
-        wait(0.3)
-        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
-        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 1
-        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
-        task.wait(0.3)
-        player.Character:SetPrimaryPartCFrame(Void)
-	task.wait(3)
-	player.Character:SetPrimaryPartCFrame(pos)
-            end
-        end
- if string.lower(split[1]) == prefix..commands.rejoin then
-        Players.LocalPlayer:Kick("\nRejoining...")
-		wait()
-		TeleportService:Teleport(PlaceId, Players.LocalPlayer)
-        end
-end)
-
-local function buttonpress(button, gameP)
-    if not gameP then
-        if button.KeyCode == Enum.KeyCode.X then
-            
+        local Player = autofill(split[2])
+        if Player then
             local pos = player.Character.PrimaryPart.CFrame
-            local trashcans = {} 
-            for _, obj in pairs(game.Workspace.Map.Trash:GetChildren()) do
-                if obj.Name == "Trashcan" and obj:IsA("Model") then
-                    if obj.Trashcan.CanCollide == true then
-                    table.insert(trashcans, obj)  
-                    print(obj)
-                    print(obj.Trashcan.CanCollide)
-                    end
-                end
-            end
-            if #trashcans > 0 then
-                if enabled == false then
-                enabled = true
-                local randomTrashcan = trashcans[math.random(1, #trashcans)] 
-                print(randomTrashcan)
-                local lookDirection = randomTrashcan.Trashcan.CFrame.LookVector
-                local behindPosition = randomTrashcan.Trashcan.Position - lookDirection * 1
-                player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, randomTrashcan.Trashcan.Position))
-                mouse1press()
-                player.Character:WaitForChild("Trashcan")
-                mouse1release()
-                task.wait(0.5)
-                wait(0.1)
-                player.Character:SetPrimaryPartCFrame(pos)
-                enabled = false
-            else
-                print("No trashcans found.")
-            end
-            end
-        end
-        if button.KeyCode == Enum.KeyCode.C then
-            player.Character:SetPrimaryPartCFrame(atomic)
-        end
-        if button.KeyCode == Enum.KeyCode.T then
-            player.Character:SetPrimaryPartCFrame(mountains)
+            game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+            wait(0.3)
+            local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+            local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
+            player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+            task.wait(0.3)
+            player.Character:SetPrimaryPartCFrame(pos)
         end
     end
-end
+    if string.lower(split[1]) == prefix..commands.void then
+        local Player = autofill(split[2])
+        if Player then
+            local pos = player.Character.PrimaryPart.CFrame
+            game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+            wait(0.3)
+            local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+            local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 1
+            player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+            task.wait(0.3)
+            player.Character:SetPrimaryPartCFrame(Void)
+            task.wait(3)
+            player.Character:SetPrimaryPartCFrame(pos)
+        end
+    end
+    if string.lower(split[1]) == prefix..commands.rejoin then
+        Players.LocalPlayer:Kick("\nRejoining...")
+        wait()
+        TeleportService:Teleport(PlaceId, Players.LocalPlayer)
+    end
 
+    -- Handle the new ;cmds command
+    if string.lower(split[1]) == prefix..commands.cmds then
+        screenGui.Enabled = true  -- Show the UI
+        displayCommands()
+    end
+end)
 
-uis.InputBegan:Connect(buttonpress)
+-- Create a close button to hide the UI
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 60, 0, 30)
+closeButton.Position = UDim2.new(0.5, -35, 0, -35)  -- Place it at the top of the scroll frame
+closeButton.Text = "Close"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.TextSize = 20
+closeButton.ZIndex = 2 -- Ensures the close button is on top of other elements
+closeButton.Parent = screenGui
+
+-- Hide the UI when the close button is clicked
+closeButton.MouseButton1Click:Connect(function()
+    screenGui.Enabled = false
+end)
+
+-- Command bar at the bottom
+local commandBar = Instance.new("TextBox")
+commandBar.Size = UDim2.new(0, 300, 0, 30)
+commandBar.Position = UDim2.new(0.5, -150, 1, -40)
+commandBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+commandBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+commandBar.TextSize = 20
+commandBar.PlaceholderText = "Enter Command..."
+commandBar.ClearTextOnFocus = false
+commandBar.Parent = screenGui
+
+-- When the user presses Enter in the command bar
+commandBar.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local commandText = commandBar.Text
+        if string.sub(commandText, 1, 1) == prefix then
+            local split = string.split(commandText, " ")
+            -- Handle the command as a coroutine to prevent blocking
+            coroutine.wrap(function()
+                if string.lower(split[1]) == prefix..commands.view then
+                    local Player = autofill(split[2])
+                    if Player then
+                        camera.CameraSubject = Player.Character.Humanoid
+                    end
+                end
+                if string.lower(split[1]) == prefix..commands.unview then
+                    camera.CameraSubject = player.Character.Humanoid
+                end
+                if string.lower(split[1]) == prefix..commands.to then
+                    local Player = autofill(split[2])
+                    if Player then
+                        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+                        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
+                        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+                    end
+                end
+                if string.lower(split[1]) == prefix..commands.bring then
+                    local Player = autofill(split[2])
+                    if Player then
+                        local pos = player.Character.PrimaryPart.CFrame
+                        game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+                        wait(0.3)
+                        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+                        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
+                        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+                        task.wait(0.3)
+                        player.Character:SetPrimaryPartCFrame(pos)
+                    end
+                end
+                if string.lower(split[1]) == prefix..commands.void then
+                    local Player = autofill(split[2])
+                    if Player then
+                        local pos = player.Character.PrimaryPart.CFrame
+                        game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+                        wait(0.3)
+                        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+                        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 1
+                        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
+                        task.wait(0.3)
+                        player.Character:SetPrimaryPartCFrame(Void)
+                        task.wait(3)
+                        player.Character:SetPrimaryPartCFrame(pos)
+                    end
+                end
+                if string.lower(split[1]) == prefix..commands.rejoin then
+                    Players.LocalPlayer:Kick("\nRejoining...")
+                    wait()
+                    TeleportService:Teleport(PlaceId, Players.LocalPlayer)
+                end
+            end)()
+        end
+        commandBar.Text = "" -- Clear the text after the command is entered
+    end
+end)
