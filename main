@@ -2,19 +2,33 @@ local uis = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local chatservice = game:GetService("Chat")
-TeleportService = game:GetService("TeleportService")
+local TeleportService = game:GetService("TeleportService")
 local prefix = ";"
 local Players = game.Players
-PlaceId = game.PlaceId
+local PlaceId = game.PlaceId
 local enabled = false
+local speeding = false
+local goingto = false
+local standing = false
+local targetPlayer = nil
+local camera = workspace.CurrentCamera
+
 local commands = {
     to = "to",
     bring = "bring",
     rejoin = "rejoin",
     void = "void",
     view = "view",
-    unview = "unview"
+    unview = "unview",
+    loopto = "lt",
+    unloopto = "unlt",
+    stand = "stand",
+    unstand = "unstand",
+    speed = "speed",
+    unspeed = "unspeed",
+    reset = "reset"
 }
+local goingto = false
 local camera = workspace.CurrentCamera
 local mountains = CFrame.new(445, 685, 368)
 local atomic = CFrame.new(1080, 20, 23000)
@@ -36,6 +50,29 @@ end)
 
 player.Chatted:Connect(function(msg)
     local split = string.split(msg, " ")
+    if string.lower(split[1]) == prefix..commands.stand then
+    local target = autofill(split[2])
+    if target then
+        standing = true
+        targetPlayer = target
+        task.spawn(function()
+            while standing do
+                if targetPlayer and targetPlayer.Character then
+                    local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
+                    local rightVector = targetPlayer.Character.PrimaryPart.CFrame.RightVector
+                    local behindPosition = targetPlayer.Character.PrimaryPart.Position - lookDirection * 4
+                    local rightPosition = behindPosition + rightVector * 2
+                    player.Character:SetPrimaryPartCFrame(CFrame.new(rightPosition, rightPosition + lookDirection))
+                end
+                task.wait()
+            end
+        end)
+    end
+end
+    if string.lower(split[1]) == prefix..commands.unstand then
+        standing = false
+        targetPlayer = nil
+    end
     if string.lower(split[1]) == prefix..commands.view then
     local Player = autofill(split[2])
      if Player then
@@ -85,8 +122,74 @@ player.Chatted:Connect(function(msg)
 		wait()
 		TeleportService:Teleport(PlaceId, Players.LocalPlayer)
         end
+if string.lower(split[1]) == prefix..commands.speed then
+            local speed = split[2]
+	    if speed then
+            speeding = false
+            speeding = true
+            while speeding do wait()
+            player.Character.Humanoid.WalkSpeed = speed
+        end
+	end
+        end
+	if string.lower(split[1]) == prefix..commands.unspeed then
+            speeding = false
+            player.Character.Humanoid.WalkSpeed = 16
+        end
+if string.lower(split[1]) == prefix..commands.reset then
+            player.Character.Humanoid.Health = 0
+        end
+if string.lower(split[1]) == prefix..commands.loopto then
+         local Player = autofill(split[2])
+        if Player then
+        	goingto = true
+        	while goingto do wait()
+        local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
+        local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 2
+        player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))        
+		end
+	end
+    end
+if string.lower(split[1]) == prefix..commands.unloopto then
+            goingto = false
+        end
 end)
 
+local function moveInFront()
+    if standing and targetPlayer and targetPlayer.Character then
+        standing = false 
+        local startTime = tick()  -- Record the current time
+        local duration = 0.5 
+        while tick() - startTime < duration do wait()
+        local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
+        local frontPosition = targetPlayer.Character.PrimaryPart.Position + lookDirection * 7
+        player.Character:SetPrimaryPartCFrame(CFrame.new(frontPosition, frontPosition + lookDirection))
+        end
+        standing = true
+        task.spawn(function()
+            while standing do
+                if targetPlayer and targetPlayer.Character then
+                    local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
+                    local rightVector = targetPlayer.Character.PrimaryPart.CFrame.RightVector
+                    local behindPosition = targetPlayer.Character.PrimaryPart.Position - lookDirection * 4
+                    local rightPosition = behindPosition + rightVector * 2
+                    player.Character:SetPrimaryPartCFrame(CFrame.new(rightPosition, rightPosition + lookDirection))
+                end
+                task.wait()
+            end
+        end)
+    end
+end
+uis.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if (input.UserInputType == Enum.UserInputType.MouseButton1 or
+        input.KeyCode == Enum.KeyCode.One or
+        input.KeyCode == Enum.KeyCode.Two or
+        input.KeyCode == Enum.KeyCode.Three or
+        input.KeyCode == Enum.KeyCode.Four) and standing then
+        moveInFront()
+    end
+end)
 local function buttonpress(button, gameP)
     if not gameP then
         if button.KeyCode == Enum.KeyCode.X then
