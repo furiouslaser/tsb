@@ -136,13 +136,9 @@ end
         local pos = player.Character.PrimaryPart.CFrame
         game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
         wait(0.3)
-	 local startTime = tick()  -- Record the current time
-        local duration = 0.5 
-        while tick() - startTime < duration do wait()
         local lookDirection = Player.Character.PrimaryPart.CFrame.LookVector
         local behindPosition = Player.Character.PrimaryPart.Position - lookDirection * 1
         player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, Player.Character.PrimaryPart.Position))
-        end
         task.wait(0.3)
         player.Character:SetPrimaryPartCFrame(Void)
 	task.wait(3)
