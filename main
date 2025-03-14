@@ -10,6 +10,8 @@ local enabled = false
 local speeding = false
 local goingto = false
 local standing = false
+local standing2 = false
+local summoned = false
 local targetPlayer = nil
 local camera = workspace.CurrentCamera
 local keydown = false
@@ -22,6 +24,7 @@ local commands = {
     unview = "unview",
     loopto = "lt",
     unloopto = "unlt",
+    controlstand = "cstand",
     stand = "stand",
     unstand = "unstand",
     speed = "speed",
@@ -75,10 +78,68 @@ mouse.Button1Down:Connect(function()
         player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
     end
 end)
+local function chatmoveInFront(duration)
+    print(1)
+    if standing2 and targetPlayer and targetPlayer.Character then
+        print(2)
+        standing2 = false
+        local startTime = tick()  -- Record the current time
+        print("Start time:", startTime)
+        while tick() - startTime < duration do
+            print("In loop, elapsed time:", tick() - startTime)
+            task.wait()
+            local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
+            local frontPosition = targetPlayer.Character.PrimaryPart.Position + lookDirection * 7
+            player.Character:SetPrimaryPartCFrame(CFrame.new(frontPosition, frontPosition + lookDirection))
+        end
+        standing2 = true
+        task.spawn(function()
+            while standing2 do
+                if targetPlayer and targetPlayer.Character then
+                    local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
+                    local rightVector = targetPlayer.Character.PrimaryPart.CFrame.RightVector
+                    local behindPosition = targetPlayer.Character.PrimaryPart.Position - lookDirection * 4
+                    local rightPosition = behindPosition + rightVector * 2
+                    player.Character:SetPrimaryPartCFrame(CFrame.new(rightPosition, rightPosition + lookDirection))
+                end
+                task.wait()
+            end
+        end)
+    end
+end
+
 
 player.Chatted:Connect(function(msg)
     local split = string.split(msg, " ")
     if string.lower(split[1]) == prefix..commands.stand then
+    local target = autofill(split[2])
+    if target then
+	standing2 = true
+	targetPlayer = target
+         target.Chatted:Connect(function(msg)
+	if msg == "summon" then
+	   summoned = true
+	   chatmoveInFront(0)
+	end
+	if summoned then
+	if msg == "1" then
+	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+	chatmoveInFront(2)
+	elseif msg == "2" then
+	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Two, false, nil)
+	chatmoveInFront(2)
+	elseif msg == "3" then
+	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Three, false, nil)
+	chatmoveInFront(1)
+	elseif msg == "4" then
+	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Four, false, nil)
+	chatmoveInFront(1)
+		end
+	end
+	 end)
+    end
+end
+    if string.lower(split[1]) == prefix..commands.controlstand then
     local target = autofill(split[2])
     if target then
         standing = true
@@ -99,6 +160,7 @@ player.Chatted:Connect(function(msg)
 end
     if string.lower(split[1]) == prefix..commands.unstand then
         standing = false
+	standing2 = false
         targetPlayer = nil
     end
     if string.lower(split[1]) == prefix..commands.view then
@@ -208,6 +270,7 @@ local function moveInFront()
         end)
     end
 end
+
 uis.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if (input.UserInputType == Enum.UserInputType.MouseButton1 or
