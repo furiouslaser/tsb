@@ -12,7 +12,7 @@ local goingto = false
 local standing = false
 local targetPlayer = nil
 local camera = workspace.CurrentCamera
-
+local keydown = false
 local commands = {
     to = "to",
     bring = "bring",
@@ -187,8 +187,8 @@ local function moveInFront()
     if standing and targetPlayer and targetPlayer.Character then
         standing = false 
         local startTime = tick()  -- Record the current time
-        local duration = 0.5 
-        while tick() - startTime < duration do wait()
+       
+        while keydown do task.wait()
         local lookDirection = targetPlayer.Character.PrimaryPart.CFrame.LookVector
         local frontPosition = targetPlayer.Character.PrimaryPart.Position + lookDirection * 7
         player.Character:SetPrimaryPartCFrame(CFrame.new(frontPosition, frontPosition + lookDirection))
@@ -211,11 +211,24 @@ end
 uis.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if (input.UserInputType == Enum.UserInputType.MouseButton1 or
+	 input.KeyCode == Enum.KeyCode.F or
         input.KeyCode == Enum.KeyCode.One or
         input.KeyCode == Enum.KeyCode.Two or
         input.KeyCode == Enum.KeyCode.Three or
         input.KeyCode == Enum.KeyCode.Four) and standing then
+	keydown = true
         moveInFront()
+    end
+end)
+uis.InputEnded:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if (input.UserInputType == Enum.UserInputType.MouseButton1 or
+	 input.KeyCode == Enum.KeyCode.F or
+        input.KeyCode == Enum.KeyCode.One or
+        input.KeyCode == Enum.KeyCode.Two or
+        input.KeyCode == Enum.KeyCode.Three or
+        input.KeyCode == Enum.KeyCode.Four) then
+        keydown = false
     end
 end)
 local function buttonpress(button, gameP)
