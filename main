@@ -36,7 +36,7 @@ local Void = CFrame.new(-3729, 2388, 31933)
 local StarterGui = game:GetService("StarterGui")
 
 local messages = {
-    "⭐ furiouslaser tsb admin script!",
+    "⭐ furiouslaser byteshift tsb script!",
     "🎟️ Commands:",
     "🔹 Press X to grab a trash can!",
     "🔹 Press T to teleport to the mountain!",
@@ -253,6 +253,8 @@ local function buttonpress(button, gameP)
                 print(randomTrashcan)
                 local lookDirection = randomTrashcan.Trashcan.CFrame.LookVector
                 local behindPosition = randomTrashcan.Trashcan.Position - lookDirection * 3
+                player.Character:SetPrimaryPartCFrame(CFrame.new(behindPosition, randomTrashcan.Trashcan.Position))
+		wait(0.15)
                 mouse1press()
                 while not player.Character:FindFirstChild("Trash Can") do 
                 task.wait(0.1)
