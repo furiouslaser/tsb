@@ -33,6 +33,31 @@ local camera = workspace.CurrentCamera
 local mountains = CFrame.new(445, 685, 368)
 local atomic = CFrame.new(1080, 20, 23000)
 local Void = CFrame.new(-3729, 2388, 31933)
+local StarterGui = game:GetService("StarterGui")
+
+local messages = {
+    "⭐ furiouslaser tsb admin script",
+    "Commands:",
+}
+
+local function sendChatMessage(text, color)
+    StarterGui:SetCore("ChatMakeSystemMessage", {
+        Text = text,
+        Color = color,
+        Font = Enum.Font.SourceSansBold,
+        FontSize = Enum.FontSize.Size24
+    })
+end
+
+-- Send initial messages
+for _, msg in ipairs(messages) do
+    sendChatMessage(msg, Color3.fromRGB(255, 0, 0))
+end
+
+-- Send commands
+for command, alias in pairs(commands) do
+    sendChatMessage("🔹 " .. command .. " - ;" .. alias, Color3.fromRGB(255, 255, 255))
+end
 local function autofill(abbreviation)
     for i,v in ipairs(game:GetService("Players"):GetPlayers()) do
         if v.Name:lower():sub(1, abbreviation:len()) == abbreviation:lower() or v.DisplayName:lower():sub(1, abbreviation:len()) == abbreviation:lower() then
