@@ -36,8 +36,11 @@ local Void = CFrame.new(-3729, 2388, 31933)
 local StarterGui = game:GetService("StarterGui")
 
 local messages = {
-    "⭐ furiouslaser tsb admin script",
-    "Commands:",
+    "⭐ furiouslaser tsb admin script!",
+    "🎟️ Commands:",
+    "🔹 Press X to grab a trash can!",
+    "🔹 Press T to teleport to the mountain!",
+    "🔹 Press C to teleport to the atomic samurai room!"
 }
 
 local function sendChatMessage(text, color)
@@ -51,7 +54,7 @@ end
 
 -- Send initial messages
 for _, msg in ipairs(messages) do
-    sendChatMessage(msg, Color3.fromRGB(255, 0, 0))
+    sendChatMessage(msg, Color3.fromRGB(255, 255, 0))
 end
 
 -- Send commands
