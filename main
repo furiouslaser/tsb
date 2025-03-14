@@ -119,15 +119,19 @@ player.Chatted:Connect(function(msg)
          target.Chatted:Connect(function(msg)
 	if msg == "summon" then
 	   summoned = true
+	  game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("ZA WARDO", "all")
 	   chatmoveInFront(0)
 	end
 	if summoned then
 	if msg == "1" then
 	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("ORA", "all")
+
 	chatmoveInFront(2)
 	elseif msg == "2" then
 	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Two, false, nil)
 	chatmoveInFront(2)
+	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA MUDA MUDA", "all")
 	elseif msg == "3" then
 	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Three, false, nil)
 	chatmoveInFront(1)
