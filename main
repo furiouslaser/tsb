@@ -117,7 +117,7 @@ player.Chatted:Connect(function(msg)
 	standing2 = true
 	targetPlayer = target
          targetPlayer.Chatted:Connect(function(msg)
-	if msg == "summon" then
+	if string.lower(msg) == "summon" then
 	   summoned = true
 	  game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("ZA WARDO", "all")
 	   chatmoveInFront(0)
