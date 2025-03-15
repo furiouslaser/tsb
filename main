@@ -119,7 +119,7 @@ player.Chatted:Connect(function(msg)
          targetPlayer.Chatted:Connect(function(msg)
 	if string.lower(msg) == "summon" then
 	   summoned = true
-	  game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("ZA WARDO", "all")
+	  game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA", "all")
 	   chatmoveInFront(0)
 	end
 	if summoned then
