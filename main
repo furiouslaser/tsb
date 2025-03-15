@@ -131,7 +131,9 @@ player.Chatted:Connect(function(msg)
 	elseif msg == "2" then
 	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Two, false, nil)
 	chatmoveInFront(2)
-	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA MUDA MUDA", "all")
+	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA", "all")
+	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA", "all")
+	game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("MUDA", "all")
 	elseif msg == "3" then
 	game:GetService('VirtualInputManager'):SendKeyEvent(true, Enum.KeyCode.Three, false, nil)
 	chatmoveInFront(1)
